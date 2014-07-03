@@ -1,7 +1,8 @@
-#include <signal.h>
-#include <sys/time.h>
-#include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <unistd.h>
+#include <sys/time.h>
 
 #define NDEBUG
 #define pMsg(fmt...) fprintf(stdout,##fmt)
@@ -14,14 +15,17 @@ void signal_int(int sig)
 
 void test_signal(int isig)
 {
-	struct itimerval otimer;
+	#ifdef DEBUG
+		struct itimerval otimer;
+	#endif
 	switch(isig)
 	{
 		case SIGALRM:
 			pMsg("catch sigalrm signal\n");
 			#ifdef DEBUG
 				getitimer(ITIMER_REAL,&otimer);
-				pMsg("sigalrm interval mircroseconds=[%ld]\n",otimer.it_interval.tv_sec*1000000+otimer.it_interval.tv_usec);
+				pMsg("sigalrm interval mircroseconds=[%ld]\n",\
+				otimer.it_interval.tv_sec*1000000+otimer.it_interval.tv_usec);
 			#endif
 			signal(SIGALRM,test_signal);
 
@@ -30,7 +34,8 @@ void test_signal(int isig)
 			pMsg("catch sigvtalrm signal\n"); 
 			#ifdef DEBUG
 				getitimer(ITIMER_VIRTUAL,&otimer);
-				pMsg("sigvtalrm interval microseconds=[%ld]\n",otimer.it_interval.tv_sec*1000000+otimer.it_interval.tv_usec);
+				pMsg("sigvtalrm interval microseconds=[%ld]\n",\
+				otimer.it_interval.tv_sec*1000000+otimer.it_interval.tv_usec);
 			#endif
 			signal(SIGVTALRM,test_signal);
 				
